@@ -1,0 +1,211 @@
+<div class="container-fluid p-0 mt-5">
+   <div class="row mx-2 my-4">
+      <div class="col-lg-4 col-md-3 col-0"></div>
+      <div class="col-lg-4 col-md-6 col-12 mt-2 align-center flex-bar">
+         <i class="material-icons search-drawable">search</i>
+         <input #searchText type="text" class="search-bar" autocomplete="off" placeholder="Search your state" (input)="filterState(searchText.value)"/>
+      </div>
+      <div class="col-lg-4 col-md-3 col-0"></div>
+   </div>
+   <div class="row mx-2 my-2">
+      <div class="container-fluid p-0 state-container px-3">
+         <div class="state-card card cursor-click" [routerLink]="['/state', state.statecode]" *ngFor="let state of filteredStateData">
+            {{state.state}}<i class="material-icons proceed">keyboard_arrow_right</i>
+         </div>
+      </div>
+   </div>
+   <div class="row mx-2 my-2">
+      <div class="col-lg-6 col-12 px-3 pt-3 pb-0">
+         <div>
+            <p class="primary-text"><b>India</b></p>
+         </div>
+         <div class="row">
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6 col-6 mb-4">
+               <div class="card confirmed-card p-2">
+                  <div class="center confirmed">
+                     <small>Confirmed</small>
+                     <b class="stats-text">{{totalData.confirmed}}</b>
+                     <div *ngIf="confirmedChartTotal" class="chart-card-all pr-1">
+                        <canvas id="confirmedTotal">{{ confirmedChartTotal }}</canvas>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6 col-6 mb-4">
+               <div class="card active-card p-2">
+                  <div class="center active">
+                     <small>Active</small>
+                     <b class="stats-text">{{totalData.active}}</b>
+                     <div *ngIf="activeChartTotal" class="chart-card-all pr-1">
+                        <canvas id="activeTotal">{{ activeChartTotal }}</canvas>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6 col-6 mb-4">
+               <div class="card recovered-card p-2">
+                  <div class="center recovered">
+                     <small>Recovered</small>
+                     <b class="stats-text">{{totalData.recovered}}</b>
+                     <div *ngIf="recoveredChartTotal" class="chart-card-all pr-1">
+                        <canvas id="recoveredTotal">{{ recoveredChartTotal }}</canvas>
+                     </div>
+                  </div> 
+               </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6 col-6 mb-4">
+               <div class="card deceased-card p-2">
+                  <div class="center deceased">
+                     <small>Deceased</small>
+                     <b class="stats-text">{{totalData.deaths}}</b>
+                     <div *ngIf="deceasedChartTotal" class="chart-card-all pr-1">
+                        <canvas id="deceasedTotal">{{ deceasedChartTotal }}</canvas>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div>
+            <p class="secondary-text">Last Updated: {{lastUpdateDate | date:'medium'}} (IST)</p>
+         </div>
+         <div>
+            <p class="primary-text"><b>State Wise</b></p>
+         </div>
+         <div class="flex-bar p-1">
+            <p class="secondary-text ml-auto">C - Confirmed, A - Active, R - Recovered, D - Deceased</p>
+         </div>
+         <div class="flex-bar align-center p-1">
+            <p class="secondary-text">Sorted based on confirmed number of cases</p>
+            <a class="ml-auto"><p class="secondary-text flex-bar align-center cursor-click" (click)="changeOrder()"><i class="material-icons">{{ascending?'keyboard_arrow_down':'keyboard_arrow_up'}}</i>{{ascending?'High to Low':'Low to High'}}</p></a>
+         </div>
+         <div class="table-responsive">
+            <table class="table table-dark table-striped table-borderless state-table">
+            
+               <thead class="table-header">
+                  <th class="stats-table-cell">State</th>
+                  <th class="stats-table-cell">C</th>
+                  <th class="stats-table-cell">A</th>
+                  <th class="stats-table-cell">R</th>
+                  <th class="stats-table-cell">D</th>
+               </thead>
+               <tbody>
+                  <tr *ngFor="let state of data">
+                     <td [routerLink]="['/state', state.statecode]" class="stats-table-cell state-name-cell cursor-click"><b>{{state.state}}</b></td>
+                     <td class="stats-table-cell">{{state.confirmed}}</td>
+                     <td class="stats-table-cell">{{state.active}}</td>
+                     <td class="stats-table-cell">{{state.recovered}}</td>
+                     <td class="stats-table-cell">{{state.deaths}}</td>
+                  </tr>
+               </tbody>
+               <tbody>
+                  <tr>
+                     <td class="stats-table-cell"><b>{{totalData.state}}</b></td>
+                     <td class="stats-table-cell"><b>{{totalData.confirmed}}</b></td>
+                     <td class="stats-table-cell"><b>{{totalData.active}}</b></td>
+                     <td class="stats-table-cell"><b>{{totalData.recovered}}</b></td>
+                     <td class="stats-table-cell"><b>{{totalData.deaths}}</b></td>
+                  </tr>
+               </tbody>
+            </table>
+         </div>
+         
+      </div>
+      <div class="col-lg-6 col-12  px-3 py-3">
+         <div>
+            <p class="primary-text"><b>Stats</b></p>
+         </div>
+         <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6 mb-4">
+               <div class="card confirmed-card p-2 h-100">
+                  <div class="confirmed">
+                     <small class="mb-1"><b>Confirmed Per Million</b></small>
+                     <div class="mb-1">
+                        <b class="facts-text">{{totalData.confirmed/1332900000 * 1000000 | number : '1.2-2'}}</b>
+                     </div>
+                     <small>
+                        <p>{{totalData.confirmed/1332900000 * 1000000 | number : '1.0-0'}} out of every 1 million people in Total have tested positive for the virus.</p>
+                     </small>
+                  </div>
+               </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6 mb-4">
+               <div class="card active-card p-2 h-100">
+                  <div class="active">
+                     <small class="mb-1"><b>Active Rate</b></small>
+                     <div class="mb-1">
+                        <b class="facts-text">{{totalData.active/totalData.confirmed*100 | number : '1.2-2'}}%</b>
+                     </div>
+                     <small>
+                        <p>For every 100 confirmed cases, {{totalData.active/totalData.confirmed*100 | number : '1.0-0'}} are currently infected.</p>
+                     </small>
+                  </div>
+               </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6 mb-4">
+               <div class="card recovered-card p-2 h-100">
+                  <div class="recovered">
+                     <small class="mb-1"><b>Recovery Rate</b></small>
+                     <div class="mb-1">
+                        <b class="facts-text">{{totalData.recovered/totalData.confirmed*100 | number : '1.2-2'}}%</b>
+                     </div>
+                     <small>
+                        <p>For every 100 confirmed cases, {{totalData.recovered/totalData.confirmed*100 | number : '1.0-0'}} have recovered from the virus.</p>
+                     </small>
+                  </div>
+               </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6 mb-4">
+               <div class="card deceased-card p-2 h-100">
+                  <div class="deceased">
+                     <small class="mb-1"><b>Mortality Rate</b></small>
+                     <div class="mb-1">
+                        <b class="facts-text">{{totalData.deaths/totalData.confirmed*100 | number : '1.2-2'}}%</b>
+                     </div>
+                     <small>
+                        <p>For every 100 confirmed cases, {{totalData.deaths/totalData.confirmed*100 | number : '1.0-0'}} have unfortunately passed away from the virus.</p>
+                     </small>
+                  </div>
+               </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6 mb-4">
+               <div class="card test-card p-2 h-100">
+                  <div class="test">
+                     <small class="mb-1"><b>Tests Per Million</b></small>
+                     <div class="mb-1">
+                        <b class="facts-text">{{todayTestData.totalsamplestested/1332900000 * 1000000 | number : '1.2-2'}}</b>
+                     </div>
+                     <small>
+                        <p>For every 1 million people in Total, {{todayTestData.totalsamplestested/1332900000 * 1000000 | number : '1.0-0'}} people were tested.</p>
+                     </small>
+                  </div>
+               </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6 mb-4">
+               <div class="card growth-card p-2 h-100">
+                  <div class="growth">
+                     <small class="mb-1"><b>Growth Rate</b></small>
+                     <div class="mb-1">
+                        <b class="facts-text">{{((totalData.confirmed - lastWeekData.totalconfirmed)/lastWeekData.totalconfirmed)*100/7 | number : '1.2-2'}}%</b>
+                     </div>
+                     <small>
+                        <p>In the last one week, the number of new infections has grown by an average of {{((totalData.confirmed - lastWeekData.totalconfirmed)/lastWeekData.totalconfirmed)*100/7 | number : '1.2-2'}}% every day.</p>
+                     </small>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div>
+            <p class="primary-text"><b>COVID-19 India News</b></p>
+         </div>
+         <div *ngFor="let newsItem of news" class="cursor-click card news-card px-3 py-3 mb-3" (click)="openLink(newsItem.link)">
+            <app-news [newsDetail]='newsItem'></app-news>
+         </div>
+         <!-- <div class="card confirmed-card chart-card-text p-3">
+            <p class="confirmed">Confirmed</p>
+            <div *ngIf="confirmedChart" class="chart-card">
+               <canvas id="confirmed">{{ confirmedChart }}</canvas>
+            </div>
+         </div> -->
+      </div>
+   </div>
+</div>

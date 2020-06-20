@@ -1,0 +1,13 @@
+.navbar-brand{
+	display: flex;
+   align-items: center;
+   font-weight: bold;
+}
+
+.navbar
+{
+	background-color: rgba(0, 0, 0, 0.644);
+	color: white;
+	display: flex;
+	align-items: center;
+}

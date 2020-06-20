@@ -1,0 +1,23 @@
+<div class="container-fluid p-0 mt-3">
+   <div class="container-fluid px-3 py-3">
+      <div class="mx-2 my-2">
+         <div class="row my-4">
+            <div class="col-lg-4 col-md-3 col-0"></div>
+            <div class="col-lg-4 col-md-6 col-12 mt-2 align-center flex-bar">
+               <i class="material-icons search-drawable">search</i>
+               <input #searchText type="text" class="search-bar" autocomplete="off" placeholder="Search for course" (input)="filterCourse(searchText.value)"/>
+            </div>
+            <div class="col-lg-4 col-md-3 col-0"></div>
+         </div>
+         <!-- <img width="100%" class="pb-3" src="assets/images/course-banner.jpg"> -->
+         <div>
+            <p class="primary-text"><b>Courses</b></p>
+         </div>
+         <div class="row">
+            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-6 col-12 mb-4" *ngFor="let course of filteredCourses">
+               <app-course-info [courseDetail]="course"></app-course-info>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>

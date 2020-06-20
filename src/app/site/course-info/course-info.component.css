@@ -1,0 +1,19 @@
+.course-name a {
+   color: #b6b6b6;
+   text-decoration: none;
+}
+
+.course-provider a {
+   color: rgb(167, 50, 50);
+   text-decoration: none;
+}
+
+.round-icon {
+   border-radius: 50%;
+   max-width: 40px;
+}
+
+.rating {
+   color: goldenrod;
+   font-size: .90rem;
+}

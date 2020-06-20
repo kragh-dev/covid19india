@@ -1,0 +1,278 @@
+<div class="container-fluid p-0 mt-5">
+   <div class="row mx-2 my-2">
+      <div class="col-lg-6 col-12 px-3 pt-3 pb-0">
+         <div>
+            <p class="primary-text"><b>{{stateData.state}}</b></p>
+         </div>
+         <div class="row">
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6 col-6 mb-4">
+               <div class="card confirmed-card p-2">
+                  <div class="center confirmed">
+                     <small>Confirmed</small>
+                     <b class="stats-text">{{stateData.confirmed}}</b>
+                     <div *ngIf="confirmedChartState" class="chart-card-all pr-1">
+                        <canvas id="confirmedState">{{ confirmedChartState }}</canvas>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6 col-6 mb-4">
+               <div class="card active-card p-2">
+                  <div class="center active">
+                     <small>Active</small>
+                     <b class="stats-text">{{stateData.active}}</b>
+                     <div *ngIf="activeChartState" class="chart-card-all pr-1">
+                        <canvas id="activeState">{{ activeChartState }}</canvas>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6 col-6 mb-4">
+               <div class="card recovered-card p-2">
+                  <div class="center recovered">
+                     <small>Recovered</small>
+                     <b class="stats-text">{{stateData.recovered}}</b>
+                     <div *ngIf="recoveredChartState" class="chart-card-all pr-1">
+                        <canvas id="recoveredState">{{ recoveredChartState }}</canvas>
+                     </div>
+                  </div> 
+               </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6 col-6 mb-4">
+               <div class="card deceased-card p-2">
+                  <div class="center deceased">
+                     <small>Deceased</small>
+                     <b class="stats-text">{{stateData.deaths}}</b>
+                     <div *ngIf="deceasedChartState" class="chart-card-all pr-1">
+                        <canvas id="deceasedState">{{ deceasedChartState }}</canvas>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div>
+            <p class="secondary-text">Last Updated: {{lastUpdateDate | date:'medium'}} (IST)</p>
+         </div>
+         <div>
+            <p class="primary-text"><b>District Wise</b></p>
+         </div>
+         <div class="flex-bar p-1">
+            <p class="secondary-text ml-auto">C - Confirmed, A - Active, R - Recovered, D - Deceased</p>
+         </div>
+         <div class="flex-bar align-center p-1">
+            <p class="secondary-text">Sorted based on confirmed number of cases</p>
+            <a class="ml-auto"><p class="secondary-text flex-bar align-center cursor-click" (click)="changeOrder()"><i class="material-icons">{{ascending?'keyboard_arrow_down':'keyboard_arrow_up'}}</i>{{ascending?'High to Low':'Low to High'}}</p></a>
+         </div>
+         <div class="table-responsive">
+            <table class="table table-dark table-striped table-borderless state-table">
+            
+               <thead class="table-header">
+                  <th class="stats-table-cell">District</th>
+                  <th class="stats-table-cell">
+                     <div>
+                        <p class="float-right m-0">C</p>
+                     </div>
+                  </th>
+                  <th class="stats-table-cell">
+                     <div>
+                        <p class="float-right m-0">A</p>
+                     </div>
+                  </th>
+                  <th class="stats-table-cell">
+                     <div>
+                        <p class="float-right m-0">R</p>
+                     </div>
+                  </th>
+                  <th class="stats-table-cell">
+                     <div>
+                        <p class="float-right m-0">D</p>
+                     </div>
+                  </th>
+               </thead>
+               <tbody>
+                  <tr *ngFor="let district of districts">
+                     <td class="stats-table-cell state-name-cell"><b>{{district.district}}</b></td>
+                     <td class="stats-table-cell">
+                        <div class="float-right w-100">
+                           <p class="m-0 float-right">{{district.confirmed}}</p>
+                        </div>
+                        <div class="w-100">
+                           <small *ngIf="district.delta.confirmed!=0" class="flex-bar align-center confirmed float-right">
+                              <i class="material-icons">{{district.delta.confirmed>0?'arrow_drop_up':'arrow_drop_down'}}</i>{{district.delta.confirmed}}
+                           </small>
+                        </div>
+                     </td>
+                     <td class="stats-table-cell">
+                        <div class="float-right w-100">
+                           <p class="m-0 float-right">{{district.active}}</p>
+                        </div>
+                     </td>
+                     <td class="stats-table-cell">
+                        <div class="float-right w-100">
+                           <p class="m-0 float-right">{{district.recovered}}</p>
+                        </div>
+                        <div class="w-100">
+                           <small *ngIf="district.delta.recovered!=0" class="flex-bar align-center recovered float-right">
+                              <i class="material-icons">{{district.delta.recovered>0?'arrow_drop_up':'arrow_drop_down'}}</i>{{district.delta.recovered}}
+                           </small>
+                        </div>
+                     </td>
+                     <td class="stats-table-cell">
+                        <div class="float-right w-100">
+                           <p class="m-0 float-right">{{district.deceased}}</p>
+                        </div>
+                        <div class="w-100">
+                           <small *ngIf="district.delta.deceased!=0" class="flex-bar align-center deceased float-right">
+                              <i class="material-icons">{{district.delta.deceased>0?'arrow_drop_up':'arrow_drop_down'}}</i>{{district.delta.deceased}}
+                           </small>
+                        </div>
+                     </td>
+                  </tr>
+               </tbody>
+               <tbody>
+                  <tr>
+                     <td class="stats-table-cell"><b>Total</b></td>
+                     <td class="stats-table-cell"><b>{{stateData.confirmed}}</b></td>
+                     <td class="stats-table-cell"><b>{{stateData.active}}</b></td>
+                     <td class="stats-table-cell"><b>{{stateData.recovered}}</b></td>
+                     <td class="stats-table-cell"><b>{{stateData.deaths}}</b></td>
+                  </tr>
+               </tbody>
+            </table>
+         </div>
+      </div>
+      <div class="col-lg-6 col-12 px-3 pt-3 pb-0">
+         <div>
+            <p class="primary-text"><b>Services</b></p>
+         </div>
+         <div class="row">
+            <div *ngIf="stateDataFb.donation" class="col-lg-3 col-md-3 col-sm-3 col-xs-6 col-6 mb-4">
+               <div class="card service-card p-2 center h-100 cursor-click" (click)="onDonate()">
+                  <img class="mb-2" width="60%" src="assets/images/services/donation.png">
+                  <b>Donate</b>
+               </div>
+            </div>
+            <div *ngIf="isDonate" class="col-12 mb-4">
+               <div class="card service-card p-2 center h-100">
+                  Donating Links in here
+               </div>
+            </div>
+            <div *ngIf="stateDataFb.hospitalbeds" class="col-lg-3 col-md-3 col-sm-3 col-xs-6 col-6 mb-4">
+               <div class="card service-card p-2 center h-100 cursor-click" (click)="openLink(stateDataFb.hospitalbeds)">
+                  <img class="mb-2" width="60%" src="assets/images/services/hospital-bed.png">
+                  <b>Hospital Beds</b>
+               </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6 col-6 mb-4" hidden>
+               <div class="card service-card p-2 center h-100 cursor-click">
+                  <img class="mb-2" width="60%" src="assets/images/services/pharmacy.png">
+                  <b>Pharmacies</b>
+               </div>
+            </div>
+            <div *ngIf="stateDataFb.epass" class="col-lg-3 col-md-3 col-sm-3 col-xs-6 col-6 mb-4">
+               <div class="card service-card p-2 center h-100 cursor-click" (click)="openLink(stateDataFb.epass)">
+                  <img class="mb-2" width="60%" src="assets/images/services/pass.png">
+                  <b>ePass</b>
+               </div>
+            </div>
+         </div>
+         <div>
+            <p class="primary-text"><b>Stats</b></p>
+         </div>
+         <div class="flex-bar space-between">
+            <p><small>Total Population:</small><b class="pl-1">{{stateDataFb.population}}</b></p>
+            <p><small>Total Tests:</small><b class="pl-1">{{latestTestData.totaltested}}</b></p>
+         </div>
+         <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6 mb-4">
+               <div class="card confirmed-card p-2 h-100">
+                  <div class="confirmed">
+                     <small class="mb-1"><b>Confirmed Per Million</b></small>
+                     <div class="mb-1">
+                        <b class="facts-text">{{stateData.confirmed/stateDataFb.population * 1000000 | number : '1.2-2'}}</b>
+                     </div>
+                     <small>
+                        <p>{{stateData.confirmed/stateDataFb.population * 1000000 | number : '1.0-0'}} out of every 1 million people in {{stateData.state}} have tested positive for the virus.</p>
+                     </small>
+                  </div>
+               </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6 mb-4">
+               <div class="card active-card p-2 h-100">
+                  <div class="active">
+                     <small class="mb-1"><b>Active Rate</b></small>
+                     <div class="mb-1">
+                        <b class="facts-text">{{stateData.active/stateData.confirmed*100 | number : '1.2-2'}}%</b>
+                     </div>
+                     <small>
+                        <p>For every 100 confirmed cases, {{stateData.active/stateData.confirmed*100 | number : '1.0-0'}} are currently infected.</p>
+                     </small>
+                  </div>
+               </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6 mb-4">
+               <div class="card recovered-card p-2 h-100">
+                  <div class="recovered">
+                     <small class="mb-1"><b>Recovery Rate</b></small>
+                     <div class="mb-1">
+                        <b class="facts-text">{{stateData.recovered/stateData.confirmed*100 | number : '1.2-2'}}%</b>
+                     </div>
+                     <small>
+                        <p>For every 100 confirmed cases, {{stateData.recovered/stateData.confirmed*100 | number : '1.0-0'}} have recovered from the virus.</p>
+                     </small>
+                  </div>
+               </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6 mb-4">
+               <div class="card deceased-card p-2 h-100">
+                  <div class="deceased">
+                     <small class="mb-1"><b>Mortality Rate</b></small>
+                     <div class="mb-1">
+                        <b class="facts-text">{{stateData.deaths/stateData.confirmed*100 | number : '1.2-2'}}%</b>
+                     </div>
+                     <small>
+                        <p>For every 100 confirmed cases, {{stateData.deaths/stateData.confirmed*100 | number : '1.0-0'}} have unfortunately passed away from the virus.</p>
+                     </small>
+                  </div>
+               </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6 mb-4">
+               <div class="card test-card p-2 h-100">
+                  <div class="test">
+                     <small class="mb-1"><b>Tests Per Million</b></small>
+                     <div class="mb-1">
+                        <b *ngIf="!latestTestData" class="facts-text">0</b>
+                        <b *ngIf="latestTestData" class="facts-text">{{latestTestData.totaltested/stateDataFb.population * 1000000 | number : '1.2-2'}}</b>
+                     </div>
+                     <small>
+                        <p *ngIf="!latestTestData">For every 1 million people in {{stateData.state}}, 0 people were tested.</p>
+                        <p *ngIf="latestTestData">For every 1 million people in {{stateData.state}}, {{latestTestData.totaltested/stateDataFb.population * 1000000 | number : '1.0-0'}} people were tested.</p>
+                     </small>
+                  </div>
+               </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6 mb-4">
+               <div class="card growth-card p-2 h-100">
+                  <div class="growth">
+                     <small class="mb-1"><b>Growth Rate</b></small>
+                     <div class="mb-1">
+                        <b class="facts-text">{{((stateData.confirmed - lastWeekDataConfirmed)/lastWeekDataConfirmed)*100/7 | number : '1.2-2'}}%</b>
+                     </div>
+                     <small>
+                        <p>In the last one week, the number of new infections has grown by an average of {{((stateData.confirmed - lastWeekDataConfirmed)/lastWeekDataConfirmed)*100/7 | number : '1.2-2'}}% every day.</p>
+                     </small>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div *ngIf="!newsError">
+            <div>
+               <p class="primary-text"><b>COVID-19 {{stateData.state}}</b></p>
+            </div>
+            <div *ngFor="let newsItem of news" class="cursor-click card news-card px-3 py-3 mb-3" (click)="openLink(newsItem.link)">
+               <app-news [newsDetail]='newsItem'></app-news>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>

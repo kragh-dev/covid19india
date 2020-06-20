@@ -1,0 +1,15 @@
+<div class="card course-card h-100">
+   <div class="container-fluid pb-1 pt-3">
+      <div class="course-name"><a href="{{courseInfo.link}}" target="blank">{{courseInfo.name}}</a></div>
+   </div>
+   <div class="container-fluid pb-2">
+      <div class="course-provider"><a href="{{courseInfo.providerLink}}" target="blank">{{courseInfo.provider}}</a></div>
+   </div>
+   <div class="container-fluid pb-3">
+      <div class="course-description"><b>{{courseInfo.description}}</b></div>
+   </div>
+   <div class="mt-auto container-fluid flex-bar align-center space-between pb-3">
+      <small class="flex-bar align-center"><b>{{courseInfo.rating}}/5</b> <i class="pl-1 material-icons rating">star</i></small>
+      <button type="submit" class="course-button" (click)="openLink(courseInfo.link)">Go to course<i class="material-icons proceed">keyboard_arrow_right</i></button>
+   </div>
+</div>
